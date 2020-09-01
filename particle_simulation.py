@@ -175,7 +175,7 @@ def draw_speed_graph(xs, ys, screen, pygame):
     xshift = 50
     yshift = -50
     bar_w = (total_w - w - 80) / len(xs) - 3
-    pygame.draw.line(screen, [0,0,0], [w + xshift - 5, h + yshift], [total_w - bar_w + xshift - 80, h + yshift], 2)
+    pygame.draw.line(screen, [0,0,0], [w + xshift - 5, h + yshift], [total_w + xshift - 80, h + yshift], 2)
     pygame.draw.line(screen, [0,0,0], [w + xshift - 5, 2], [w + xshift - 5, h + yshift], 2)
 
     font = pygame.font.SysFont(None, 24)
@@ -205,7 +205,7 @@ def draw_speed_graph(xs, ys, screen, pygame):
     for i in range(len(xs)):
         x = xs[i]
         y = ys[i]
-        actual_x = lerp(x, 0, max_vel, w + bar_w + xshift, total_w - bar_w + xshift - 80)
+        actual_x = lerp(x, 0, max_vel, w + xshift, total_w - bar_w + xshift - 80)
         actual_y = lerp(y, 0, num_particles / 3, h + yshift, 100 + yshift)
 
         col = [0,0,0]
