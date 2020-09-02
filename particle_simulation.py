@@ -7,6 +7,7 @@ import time
 import matplotlib.pyplot as plt
 from copy import deepcopy
 
+
 class Particle:
     def __init__(self, x, y):
         self.mass = 49
@@ -266,5 +267,8 @@ while running:
 
     tick_ct += 1
 
+    # save image
+    if tick_ct % 1 == 0:
+    	pygame.image.save(screen, 'img' + str(tick_ct) + '.png')
 
 pygame.quit()
