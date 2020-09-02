@@ -268,7 +268,7 @@ while running:
     tick_ct += 1
 
     # save image
-    if tick_ct % 1 == 0:
-    	pygame.image.save(screen, 'img' + str(tick_ct) + '.png')
+    if tick_ct % 5 == 0:
+    	pygame.image.save(screen, 'images/img' + str(tick_ct) + '.png')
 
 pygame.quit()
