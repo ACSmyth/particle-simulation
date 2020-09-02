@@ -6,7 +6,7 @@ import random
 import time
 import matplotlib.pyplot as plt
 from copy import deepcopy
-
+import colorsys
 
 class Particle:
     def __init__(self, x, y):
@@ -63,7 +63,9 @@ class Particle:
         self.y = new_y
 
     def draw(self, screen, pygame, xshift=0, yshift=0):
-        col = [0,0,0]
+        hue = lerp(self.vel, 0, max_vel, 0.6, 1)
+        col = colorsys.hsv_to_rgb(hue, 1, 1)
+        col = [e * 255 for e in col]
         pos = [int(self.x) + xshift, int(self.y) + yshift]
         pygame.draw.circle(screen, col, pos, self.r)
 
@@ -208,7 +210,11 @@ def draw_speed_graph(xs, ys, screen, pygame):
         actual_x = lerp(x, 0, max_vel, w + xshift, total_w - bar_w + xshift - 80)
         actual_y = lerp(y, 0, num_particles / 3, h + yshift, 100 + yshift)
 
-        col = [0,0,0]
+
+        hue = lerp(x, 0, max_vel, 0.6, 1)
+        col = colorsys.hsv_to_rgb(hue, 1, 1)
+        col = [e * 255 for e in col]
+
         dimensions = [actual_x, actual_y, bar_w, h - actual_y + yshift]
         dimensions = [int(e) for e in dimensions]
         pygame.draw.rect(screen, col, dimensions)
@@ -266,5 +272,8 @@ while running:
         time.sleep(spf - net)
 
     tick_ct += 1
+
+    if tick_ct % 5 == 0:
+        pygame.image.save(screen, 'images/img' + str(tick_ct//5) + '.png')
 
 pygame.quit()
