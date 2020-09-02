@@ -190,7 +190,7 @@ def draw_speed_graph(xs, ys, screen, pygame):
 
     for y in range(10):
         scl = 0.9
-        text_y = int(lerp(y, 0, 9, 0, num_particles / 3 * scl))
+        text_y = int(lerp(y, 0, 9, 0, num_particles / 7 * scl))
         ln = len(str(text_y))
         if ln == 1:
             len_shift = 5
@@ -208,7 +208,7 @@ def draw_speed_graph(xs, ys, screen, pygame):
         x = xs[i]
         y = ys[i]
         actual_x = lerp(x, 0, max_vel, w + xshift, total_w - bar_w + xshift - 80)
-        actual_y = lerp(y, 0, num_particles / 3, h + yshift, 100 + yshift)
+        actual_y = lerp(y, 0, num_particles / 7, h + yshift, 100 + yshift)
 
 
         hue = lerp(x, 0, max_vel, 0.6, 1)
@@ -253,7 +253,7 @@ while running:
     speedss.append(deepcopy(speeds))
 
     # smoothed avg
-    smoothing = 200
+    smoothing = 300
     avg_speeds = [0 for q in range(len(speeds))]
     n = 0
     for q in range(smoothing):
