@@ -180,7 +180,7 @@ def draw_speed_graph(xs, ys, screen, pygame):
 
     font = pygame.font.SysFont(None, 24)
     speed_txt = font.render('Speed (pixels / second)', True, [0,0,0])
-    screen.blit(speed_txt, (w + (total_w - w) / 2 - 90, h + yshift + 25)) 
+    screen.blit(speed_txt, (int(w + (total_w - w) / 2 - 90), int(h + yshift + 25)))
 
     freq_txt = font.render('Frequency', True, [0,0,0])
     freq_txt = pygame.transform.rotate(freq_txt, 90)
@@ -199,7 +199,7 @@ def draw_speed_graph(xs, ys, screen, pygame):
 
         actual_y = lerp(y, 0, 9, (h + yshift), h - ((h - (100 + yshift)) * scl))
         img = font.render(str(text_y), True, [0,0,0])
-        screen.blit(img, (w + bar_w + len_shift, actual_y))
+        screen.blit(img, (int(w + bar_w + len_shift), int(actual_y)))
 
 
     for i in range(len(xs)):
@@ -210,11 +210,12 @@ def draw_speed_graph(xs, ys, screen, pygame):
 
         col = [0,0,0]
         dimensions = [actual_x, actual_y, bar_w, h - actual_y + yshift]
+        dimensions = [int(e) for e in dimensions]
         pygame.draw.rect(screen, col, dimensions)
 
         if i % 5 == 0:
             img = font.render(str(int(x)), True, [0,0,0])
-            screen.blit(img, (actual_x + 5, h + yshift + 5))
+            screen.blit(img, (int(actual_x + 5), int(h + yshift + 5)))
 
 running = True
 fps = 180
