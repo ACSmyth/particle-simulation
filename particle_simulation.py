@@ -130,8 +130,7 @@ class QuadDivider:
                 if quad.in_range(p):
                     quad.add_particle(p)
                     return
-            print(str(p.x) + ' ' + str(p.y))
-            raise Exception()
+            raise Exception(str(p.x) + ' ' + str(p.y))
 
 max_vel = 5
 total_w = 1600
@@ -266,9 +265,5 @@ while running:
         time.sleep(spf - net)
 
     tick_ct += 1
-
-    # save image
-    if tick_ct % 5 == 0:
-    	pygame.image.save(screen, 'images/img' + str(tick_ct) + '.png')
 
 pygame.quit()
