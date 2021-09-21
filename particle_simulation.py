@@ -135,8 +135,8 @@ class QuadDivider:
             raise Exception(str(p.x) + ' ' + str(p.y))
 
 max_vel = 5
-total_w = 1600
-w, h = 1000, 1000
+total_w = 1200
+w, h = 700, 700
 pygame.init()
 pygame.display.set_caption('Simulation')
 screen = pygame.display.set_mode([total_w, h])
@@ -224,7 +224,7 @@ def draw_speed_graph(xs, ys, screen, pygame):
             screen.blit(img, (int(actual_x + 5), int(h + yshift + 5)))
 
 running = True
-fps = 180
+fps = 144
 spf = 1 / fps
 avg = 0
 tick_ct = 0
