@@ -7,6 +7,9 @@ import time
 import matplotlib.pyplot as plt
 from copy import deepcopy
 import colorsys
+import maxwell_boltzmann
+import numpy as np
+
 
 class Particle:
     def __init__(self, x, y):
@@ -62,12 +65,13 @@ class Particle:
         self.x = new_x
         self.y = new_y
 
-    def draw(self, screen, pygame, xshift=0, yshift=0):
+    def draw(self, screen, pygame, graph_xshift=0, graph_yshift=0):
         hue = lerp(self.vel, 0, max_vel, 0.6, 1)
         col = colorsys.hsv_to_rgb(hue, 1, 1)
         col = [e * 255 for e in col]
-        pos = [int(self.x) + xshift, int(self.y) + yshift]
+        pos = [int(self.x) + graph_xshift, int(self.y) + graph_yshift]
         pygame.draw.circle(screen, col, pos, self.r)
+
 
 class QuadDivider:
     def __init__(self, x, y, w, h, depth=3):
@@ -134,6 +138,7 @@ class QuadDivider:
                     return
             raise Exception(str(p.x) + ' ' + str(p.y))
 
+
 max_vel = 5
 total_w = 1600
 w, h = 1000, 1000
@@ -150,6 +155,12 @@ for q in range(num_particles):
     p = Particle(x, y)
     #particles.append(p)
     quad.add_particle(p)
+
+graph_xshift = 50
+graph_yshift = -50
+maxwell_boltzmann_points = [(x, maxwell_boltzmann.pdf(x)) for x in np.linspace(0,max_vel,100)]
+maxwell_boltzmann_points = [(w + graph_xshift + x*103, h + graph_yshift - y*1100) for x,y in maxwell_boltzmann_points]
+print(maxwell_boltzmann_points)
 
 def dist(x1, y1, x2, y2):
     return ((y2 - y1) ** 2 + (x2 - x1) ** 2) ** 0.5
@@ -174,19 +185,17 @@ def lerp(x, a, b, c, d):
     return ((d - c) / (b - a)) * (x - a) + c
 
 def draw_speed_graph(xs, ys, screen, pygame):
-    xshift = 50
-    yshift = -50
     bar_w = (total_w - w - 80) / len(xs) - 3
-    pygame.draw.line(screen, [0,0,0], [w + xshift - 5, h + yshift], [total_w + xshift - 80, h + yshift], 2)
-    pygame.draw.line(screen, [0,0,0], [w + xshift - 5, 2], [w + xshift - 5, h + yshift], 2)
+    pygame.draw.line(screen, [0,0,0], [w + graph_xshift - 5, h + graph_yshift], [total_w + graph_xshift - 80, h + graph_yshift], 2)
+    pygame.draw.line(screen, [0,0,0], [w + graph_xshift - 5, 2], [w + graph_xshift - 5, h + graph_yshift], 2)
 
     font = pygame.font.SysFont(None, 24)
     speed_txt = font.render('Speed (pixels / second)', True, [0,0,0])
-    screen.blit(speed_txt, (int(w + (total_w - w) / 2 - 90), int(h + yshift + 25)))
+    screen.blit(speed_txt, (int(w + (total_w - w) / 2 - 90), int(h + graph_yshift + 25)))
 
     freq_txt = font.render('Frequency', True, [0,0,0])
     freq_txt = pygame.transform.rotate(freq_txt, 90)
-    screen.blit(freq_txt, (w + xshift - 30, 30))
+    screen.blit(freq_txt, (w + graph_xshift - 30, 30))
 
     for y in range(10):
         scl = 0.9
@@ -199,7 +208,7 @@ def draw_speed_graph(xs, ys, screen, pygame):
         elif ln == 3:
             len_shift = -5
 
-        actual_y = lerp(y, 0, 9, (h + yshift), h - ((h - (100 + yshift)) * scl))
+        actual_y = lerp(y, 0, 9, (h + graph_yshift), h - ((h - (100 + graph_yshift)) * scl))
         img = font.render(str(text_y), True, [0,0,0])
         screen.blit(img, (int(w + bar_w + len_shift), int(actual_y)))
 
@@ -207,21 +216,25 @@ def draw_speed_graph(xs, ys, screen, pygame):
     for i in range(len(xs)):
         x = xs[i]
         y = ys[i]
-        actual_x = lerp(x, 0, max_vel, w + xshift, total_w - bar_w + xshift - 80)
-        actual_y = lerp(y, 0, num_particles / 7, h + yshift, 100 + yshift)
+        actual_x = lerp(x, 0, max_vel, w + graph_xshift, total_w - bar_w + graph_xshift - 80)
+        actual_y = lerp(y, 0, num_particles / 7, h + graph_yshift, 100 + graph_yshift)
 
 
         hue = lerp(x, 0, max_vel, 0.6, 1)
         col = colorsys.hsv_to_rgb(hue, 1, 1)
         col = [e * 255 for e in col]
 
-        dimensions = [actual_x, actual_y, bar_w, h - actual_y + yshift]
+        dimensions = [actual_x, actual_y, bar_w, h - actual_y + graph_yshift]
         dimensions = [int(e) for e in dimensions]
         pygame.draw.rect(screen, col, dimensions)
 
         if i % 5 == 0:
             img = font.render(str(int(x)), True, [0,0,0])
-            screen.blit(img, (int(actual_x + 5), int(h + yshift + 5)))
+            screen.blit(img, (int(actual_x + 5), int(h + graph_yshift + 5)))
+    
+    # Draw Maxwell-Boltzmann outline
+    pygame.draw.lines(screen, (0,0,0), False, maxwell_boltzmann_points)
+    
 
 running = True
 fps = 180
@@ -246,7 +259,7 @@ while running:
     xs = [q/5 for q in range(26)]
     speeds = [0 for q in range(26)]
     for p in quad.get_particles():
-        p.draw(screen, pygame, xshift=2, yshift=2)
+        p.draw(screen, pygame, graph_xshift=2, graph_yshift=2)
         idx = min(xs, key=lambda e: abs(e-p.vel))
         idx = xs.index(idx)
         speeds[idx] += 1
